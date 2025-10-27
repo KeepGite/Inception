@@ -1,6 +1,8 @@
 ARG DEBIAN_TAG=bookworm-slim
 FROM debian:${DEBIAN_TAG}
 
+RUN apt-get update && apt-get install -y iputils-ping
+
 RUN apt-get update && apt-get install -y mariadb-server && rm -rf /var/lib/apt/lists/*
 
 RUN        mkdir -p /var/run/mysqld && \

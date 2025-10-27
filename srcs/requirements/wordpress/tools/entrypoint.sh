@@ -11,10 +11,10 @@ fi
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     wp config create \
-        --dbname="$DB_NAME" \
-        --dbuser="$DB_USER" \
-        --dbpass="$DB_PASSWORD" \
-        --dbhost="$DB_HOST" \
+        --dbname="$MYSQL_DATABASE" \
+        --dbuser="$MYSQL_USER" \
+        --dbpass="$MYSQL_PASSWORD" \
+        --dbhost="$MYSQL_HOST" \
         --path=/var/www/html \
         --allow-root
 
