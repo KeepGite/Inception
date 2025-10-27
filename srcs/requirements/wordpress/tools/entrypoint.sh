@@ -6,7 +6,7 @@ if [ ! -f "wp-load.php" ]; then
   chown -R www-data:www-data /var/www/html
 fi
 
-sed -i 's|^listen = .*|listen = 0.0.0.0:9000|' /etc/php/8.1/fpm/pool.d/www.conf
+sed -i 's|^listen = .*|listen = 0.0.0.0:9000|' /etc/php/*/fpm/pool.d/www.conf
 
 if [ ! -f "wp-config.php" ]; then
   wp config create \
