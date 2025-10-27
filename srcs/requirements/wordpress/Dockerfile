@@ -1,4 +1,4 @@
-ARG DEBIAN_TAG
+ARG DEBIAN_TAG=bookworm-slim
 FROM debian:${DEBIAN_TAG}
 
 RUN apt-get update && apt-get install -y \
