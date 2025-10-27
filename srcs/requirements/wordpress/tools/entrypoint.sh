@@ -1,7 +1,5 @@
+#!/bin/sh
 set -e
-
-DB_PASS="$(${DB_PASSWORD})"
-ADMIN_PASS="$(${WP_ADMIN_PASSWORD})"
 
 if [ ! -f "wp-load.php" ]; then
   curl -sSL https://wordpress.org/latest.tar.gz | tar -xz --strip-components=1
@@ -13,7 +11,7 @@ if [ ! -f "wp-config.php" ]; then
     --path=/var/www/html \
     --dbname="${DB_NAME}" \
     --dbuser="${DB_USER}" \
-    --dbpass="${DB_PASS}" \
+    --dbpass="${DB_PASSWORD}" \
     --dbhost="${DB_HOST}" \
     --skip-check \
     --allow-root

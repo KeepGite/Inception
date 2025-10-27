@@ -11,7 +11,7 @@ networks:
 services:
   mariadb:
     container_name: mariadb
-    image: mariadb     
+    image: mariadb-inceprion
     build:
       context: ./requirements/mariadb/
       args:
@@ -34,7 +34,7 @@ services:
 
   wordpress:
     container_name: wordpress
-    image: wordpress
+    image: wordpress-inceprion
     build:
       context: ./requirements/wordpress/
       args:
@@ -65,7 +65,7 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx
+    image: nginx-inceprion
     build:
       context: ./requirements/nginx/
       args:

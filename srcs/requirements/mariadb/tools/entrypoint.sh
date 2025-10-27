@@ -1,7 +1,5 @@
+#!/bin/sh
 set -e
-
-ROOT_PW="$(cat "${MYSQL_ROOT_PASSWORD}")"
-USER_PW="$(cat "${MYSQL_PASSWORD}")"
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
   mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
@@ -13,7 +11,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     sleep 1
   done
 
-  mysql -uroot <<-SQL
+  mysql -uroot << SQL
     ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROOT_PW}';
     FLUSH PRIVILEGES;
     CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

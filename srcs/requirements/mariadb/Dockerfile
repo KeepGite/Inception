@@ -9,4 +9,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 3306
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["mariadbd", "--user=mysql", "--bind-address=0.0.0.0"]
+CMD ["mariadbd", "--socket=/run/mysqld/mysqld.sock", "--user=mysql", "--bind-address=0.0.0.0"]
