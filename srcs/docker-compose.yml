@@ -58,7 +58,7 @@ services:
       - inception
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:0);'"]
+      test: ["CMD", "mariadb-admin" ,"ping", "-h", "localhost", "--password=<value_of_MYSQL_ROOT_PASSWORD_variable>"]
       interval: 10s
       timeout: 3s
       retries: 10
