@@ -1,3 +1,4 @@
+ARG DEBIAN_TAG
 FROM debian:${DEBIAN_TAG}
 
 RUN apt-get update && apt-get install -y mariadb-server && rm -rf /var/lib/apt/lists/*

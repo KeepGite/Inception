@@ -33,7 +33,7 @@ services:
     build:
       context: ./requirements/mariadb
       args:
-        - DEBIAN_TAG=${DEBIAN_TAG}
+        DEBIAN_TAG: ${DEBIAN_TAG}
     volumes:
       - db_data:/var/lib/mysql
     environment:
@@ -58,7 +58,7 @@ services:
     build:
       context: ./requirements/wordpress
       args:
-        - DEBIAN_TAG=${DEBIAN_TAG}
+        DEBIAN_TAG: ${DEBIAN_TAG}
     depends_on:
       mariadb:
         condition: service_healthy
