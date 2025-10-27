@@ -27,7 +27,7 @@ services:
       - inception
     restart: always
 #    healthcheck:
-#      test: ["CMD-SHELL", "mariadb-admin ping -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+#      test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD}) || exit 1"]
 #      interval: 5s
 #      timeout: 3s
 #      retries: 10
@@ -39,9 +39,9 @@ services:
       context: ./requirements/wordpress
       args:
         DEBIAN_TAG: ${DEBIAN_TAG}
-    depends_on:
-      mariadb:
-        condition: service_healthy
+          #depends_on:
+      #mariadb:
+        #        condition: service_healthy
     volumes:
       - wp_data:/var/www/html
     environment:
