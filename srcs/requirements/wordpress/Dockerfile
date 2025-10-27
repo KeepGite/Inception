@@ -10,13 +10,13 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sSLo /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
  && chmod +x /usr/local/bin/wp
 
-RUN     apt update && apt install -y php8.1 \
-        php8.1-fpm \
-        php8.1-cli \
-        php8.1-mysql \
+RUN     apt-get update && apt-get install -y php8.2 \
+        php8.2-fpm \
+        php8.2-cli \
+        php8.2-mysql \
         mariadb-client
 
-COPY conf/php-fpm.conf /etc/php/*/fpm/pool.d/www.conf
+COPY conf/php-fpm.conf /etc/php/8.1/fpm/pool.d/www.conf
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
