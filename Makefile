@@ -7,7 +7,7 @@ LOGIN    ?= $(shell whoami)
 DATA_DIR := /home/$(LOGIN)/data
 
 IMAGES   := nginx wordpress mariadb
-VOLUMES  := srcs_db_data srcs_wp_data
+VOLUMES  := inception_db_data inception_wp_data
 NETWORK  := inception
 
 .PHONY: all init build up down logs ps clean fclean re
