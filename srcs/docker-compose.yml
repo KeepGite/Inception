@@ -4,13 +4,9 @@ volumes:
   wp_data:
     name: inception_wp_data
 
-#secrets:
-#  db_root_password:
-#    file: ../secrets/db_root_password.txt
-#  db_password:
-#    file: ../secrets/db_password.txt
-#  credentials:
-#    file: ../secrets/credentials.txt
+networks:
+  inception:
+    driver: bridge
 
 services:
   mariadb:
@@ -27,9 +23,6 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-#    secrets:
-#      - db_root_password
-#      - db_password
     networks: 
       - inception
     restart: always
@@ -61,9 +54,6 @@ services:
       - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
       - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
       - WP_URL=${WP_URL}
-#    secrets:
-#      - db_password
-#      - credentials
     networks: 
       - inception
     restart: always
@@ -92,6 +82,3 @@ services:
     ports:
       - "443:443"
     restart: always
-
-networks:
-  _- inception
