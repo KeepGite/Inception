@@ -1,27 +1,27 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-  mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
-  mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-  pid="$!"
+if [ ! -d /var/lib/mysql/mysql ]; then
+    mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+    mysqld_safe --user=mysql --skip-grant-tables &
+        sleep 5
 
-  for i in 1 2 3 4 5 6 7 8 9 10; do
-    mysqladmin ping >/dev/null 2>&1 && break
-    sleep 1
-  done
+cat > /tmp/init.sql <<EOF
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD';
+CREATE DATABASE IF NOT EXISTS `$DB_NAME`;
+CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';
+GRANT ALL PRIVILEGES ON `$DB_NAME`.* TO '$DB_USER'@'%';
+FLUSH PRIVILEGES;
+EOF
 
-  mysql -uroot << SQL
-    ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROOT_PW}';
-    FLUSH PRIVILEGES;
-    CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-    CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${USER_PW}';
-    GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-    FLUSH PRIVILEGES;
-SQL
+    mariadb -u root < /tmp/init.sql
 
-  mysqladmin -uroot -p"${ROOT_PW}" shutdown
-  wait "${pid}"
+    rm /tmp/init.sql
+fi
+
+if pgrep mysqld; then
+    mysqladmin shutdown
 fi
 
 exec "$@"

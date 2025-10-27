@@ -1,7 +1,14 @@
+[client-server]
+    socket=/var/run/mysqld/mysqld.sock
+    port=3306
+
+[client]
+    socket=/var/run/mysqld/mysqld.sock
+
 [mysqld]
+    bind-address=0.0.0.0
+    socket=/var/run/mysqld/mysqld.sock
+    datadir=/var/lib/mysql
+    language=/usr/local/share/mysql/english
 
-
-skip-networking=0
-bind-address=0.0.0.0
-socket=/var/run/mysqld/mysqld.sock
-port=3306
+    log-basename=mysqld
