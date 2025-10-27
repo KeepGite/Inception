@@ -1,6 +1,10 @@
 NAME = inception
 COMPOSE = docker compose -f srcs/docker-compose.yml --env-file srcs/.env
 
+IMAGES   := nginx wordpress mariadb
+VOLUMES  := srcs_db_data srcs_wp_data
+NETWORK  := inception
+
 DATA_DIR = /home/$(shell grep '^LOGIN=' srcs/.env | cut -d= -f2)/data
 
 all: up
@@ -21,12 +25,15 @@ down:
 re: fclean up
 
 logs:
-	$(COMPOSE) logs -f
+	$(COMPOSE) down --remove-orphans
 
-clean:
-	$(COMPOSE) down --volumes --remove-orphans
-docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker images -qa); docker volume rm $(docker volume ls -q); docker réseau rm $(docker network ls -q) 2>/dev/null
-
+clean: down
+	- docker volume rm $(VOLUMES) 2>/dev/null || true
+	- docker network rm $(NETWORK) 2>/dev/null || true
 
 fclean: clean
-	docker image prune -f
+	- docker rmi -f $(IMAGES) 2>/dev/null || true
+	- docker image prune -f
+	- docker builder prune -f
+
+.PHONY: init build up down re logs clean fclean
