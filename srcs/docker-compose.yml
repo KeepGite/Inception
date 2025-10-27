@@ -13,7 +13,7 @@ services:
     container_name: mariadb
     image: mariadb     
     build:
-      context: ./requirements/mariadb
+      context: ./requirements/mariadb/
       args:
         DEBIAN_TAG: ${DEBIAN_TAG}
     volumes:
@@ -36,7 +36,7 @@ services:
     container_name: wordpress
     image: wordpress
     build:
-      context: ./requirements/wordpress
+      context: ./requirements/wordpress/
       args:
         DEBIAN_TAG: ${DEBIAN_TAG}
           #depends_on:
@@ -67,7 +67,7 @@ services:
     container_name: nginx
     image: nginx
     build:
-      context: ./requirements/nginx
+      context: ./requirements/nginx/
       args:
         - DEBIAN_TAG=${DEBIAN_TAG}
     depends_on:
