@@ -31,7 +31,7 @@ services:
 #      - db_root_password
 #      - db_password
     networks: 
-      -inception
+      - inception
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD}) || exit 1"]
