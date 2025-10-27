@@ -1,0 +1,105 @@
+version: "3.8"
+
+networks:
+  inception:
+    name: inception
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/data/db
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/data/wp
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
+
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb     
+    build:
+      context: ./requirements/mariadb
+      args:
+        - DEBIAN_TAG=${DEBIAN_TAG}
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD_FILE=${MYSQL_PASSWORD_FILE}
+      - MYSQL_ROOT_PASSWORD_FILE=${MYSQL_ROOT_PASSWORD_FILE}
+    secrets:
+      - db_root_password
+      - db_password
+    networks: [inception]
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD_FILE}) || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build:
+      context: ./requirements/wordpress
+      args:
+        - DEBIAN_TAG=${DEBIAN_TAG}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - wp_data:/var/www/html
+    environment:
+      - DB_HOST=mariadb
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD_FILE=${MYSQL_PASSWORD_FILE}
+      - WP_TITLE=${WP_TITLE}
+      - WP_ADMIN_USER=${WP_ADMIN_USER}
+      - WP_ADMIN_PASSWORD_FILE=${WP_ADMIN_PASSWORD_FILE}
+      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
+      - WP_URL=${WP_URL}
+    secrets:
+      - db_password
+      - credentials
+    networks: [inception]
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:0);'"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    build:
+      context: ./requirements/nginx
+      args:
+        - DEBIAN_TAG=${DEBIAN_TAG}
+    depends_on:
+      wordpress:
+        condition: service_started
+    volumes:
+      - wp_data:/var/www/html:ro
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    networks: [inception]
+    ports:
+      - "443:443"
+    restart: always
