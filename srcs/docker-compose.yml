@@ -4,18 +4,20 @@ volumes:
   wp_data:
     name: inception_wp_data
 
+
 networks:
   inception:
     driver: bridge
 
+
 services:
   mariadb:
     container_name: mariadb
-    image: mariadb-inceprion
+    image: mariadb-inception
     build:
       context: ./requirements/mariadb/
-      args:
-        DEBIAN_TAG: ${DEBIAN_TAG}
+#      args:
+#        DEBIAN_TAG: ${DEBIAN_TAG}
     volumes:
       - db_data:/var/lib/mysql
     env_file:
@@ -31,11 +33,13 @@ services:
 
   wordpress:
     container_name: wordpress
-    image: wordpress-inceprion
+    image: wordpress-inception
     build:
       context: ./requirements/wordpress/
-      args:
-        DEBIAN_TAG: ${DEBIAN_TAG}
+#      args:
+#        DEBIAN_TAG: ${DEBIAN_TAG}
+    depends_on:
+      - mariadb
           #depends_on:
       #mariadb:
         #        condition: service_healthy
@@ -54,14 +58,14 @@ services:
 
   nginx:
     container_name: nginx
-    image: nginx-inceprion
+    image: nginx-inception
     build:
       context: ./requirements/nginx/
-      args:
-        - DEBIAN_TAG=${DEBIAN_TAG}
+#      args:
+#        - DEBIAN_TAG=${DEBIAN_TAG}
     depends_on:
-      wordpress:
-        condition: service_started
+      - wordpress
+#        condition: service_started
     volumes:
       - wp_data:/var/www/html
     env_file:
