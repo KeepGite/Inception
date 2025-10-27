@@ -26,11 +26,11 @@ services:
     networks: 
       - inception
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "mariadb-admin ping -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
+#    healthcheck:
+#      test: ["CMD-SHELL", "mariadb-admin ping -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+#      interval: 5s
+#      timeout: 3s
+#      retries: 10
 
   wordpress:
     container_name: wordpress
@@ -57,11 +57,11 @@ services:
     networks: 
       - inception
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:1);'"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
+#    healthcheck:
+#      test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:1);'"]
+#      interval: 10s
+#      timeout: 3s
+#      retries: 10
 
   nginx:
     container_name: nginx
