@@ -1,14 +1,15 @@
+version: "3.9"
+
 volumes:
   db_data:
     name: inception_db_data
   wp_data:
     name: inception_wp_data
 
-
 networks:
   inception:
+    name: inception
     driver: bridge
-
 
 services:
   mariadb:
@@ -16,62 +17,60 @@ services:
     image: mariadb-inception
     build:
       context: ./requirements/mariadb/
-#      args:
-#        DEBIAN_TAG: ${DEBIAN_TAG}
+      args:
+        DEBIAN_TAG: ${DEBIAN_TAG}
     volumes:
       - db_data:/var/lib/mysql
     env_file:
       - .env
-    networks: 
+    networks:
       - inception
-    restart: always
-#    healthcheck:
-#      test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD}) || exit 1"]
-#      interval: 5s
-#      timeout: 3s
-#      retries: 10
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -uroot -p$$MYSQL_ROOT_PASSWORD --socket=/var/run/mysqld/mysqld.sock"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   wordpress:
     container_name: wordpress
     image: wordpress-inception
     build:
       context: ./requirements/wordpress/
-#      args:
-#        DEBIAN_TAG: ${DEBIAN_TAG}
+      args:
+        DEBIAN_TAG: ${DEBIAN_TAG}
     depends_on:
-      - mariadb
-          #depends_on:
-      #mariadb:
-        #        condition: service_healthy
+      mariadb:
+        condition: service_healthy
     volumes:
       - wp_data:/var/www/html
     env_file:
       - .env
-    networks: 
+    networks:
       - inception
-    restart: always
-#    healthcheck:
-#      test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:1);'"]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 10
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm$$PHP_VERSION -t"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   nginx:
     container_name: nginx
     image: nginx-inception
     build:
       context: ./requirements/nginx/
-#      args:
-#        - DEBIAN_TAG=${DEBIAN_TAG}
+      args:
+        DEBIAN_TAG: ${DEBIAN_TAG}
     depends_on:
-      - wordpress
-#        condition: service_started
+      wordpress:
+        condition: service_started
     volumes:
       - wp_data:/var/www/html
     env_file:
       - .env
-    networks: 
+    networks:
       - inception
     ports:
       - "443:443"
-    restart: always
+    restart: unless-stopped
