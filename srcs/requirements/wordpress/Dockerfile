@@ -1,22 +1,20 @@
 ARG DEBIAN_TAG=bookworm-slim
 FROM debian:${DEBIAN_TAG}
 
-RUN apt-get update && apt-get install -y iputils-ping
+ARG PHP_VERSION=8.2
+ENV PHP_VERSION=${PHP_VERSION}
 
-RUN apt-get update && apt-get install -y \
-    php-fpm php-mysql php-cli curl tar ca-certificates less \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y curl ca-certificates tar less mariadb-client \
+       php${PHP_VERSION}-fpm php${PHP_VERSION}-cli php${PHP_VERSION}-mysql php${PHP_VERSION}-mbstring php${PHP_VERSION}-xml php${PHP_VERSION}-zip php${PHP_VERSION}-curl \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sSLo /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
- && chmod +x /usr/local/bin/wp
+    && chmod +x /usr/local/bin/wp
 
-RUN     apt-get update && apt-get install -y php8.2 \
-        php8.2-fpm \
-        php8.2-cli \
-        php8.2-mysql \
-        mariadb-client
+RUN ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/local/sbin/php-fpm
 
-COPY conf/php-fpm.conf /etc/php/8.1/fpm/pool.d/www.conf
+COPY conf/php-fpm.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

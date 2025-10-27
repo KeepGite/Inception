@@ -6,7 +6,7 @@ LOGIN    ?= $(shell whoami)
 
 DATA_DIR := /home/$(LOGIN)/data
 
-IMAGES   := nginx wordpress mariadb
+IMAGES   := nginx-inception wordpress-inception mariadb-inception
 VOLUMES  := inception_db_data inception_wp_data
 NETWORK  := inception
 
