@@ -30,7 +30,7 @@ services:
 #    secrets:
 #      - db_root_password
 #      - db_password
-    networks: [inception]
+    networks: inception
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD}) || exit 1"]
@@ -63,7 +63,7 @@ services:
 #    secrets:
 #      - db_password
 #      - credentials
-    networks: [inception]
+    networks: inception
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:0);'"]
@@ -85,10 +85,10 @@ services:
       - wp_data:/var/www/html
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
-    networks: [inception]
+    networks: inception
     ports:
       - "443:443"
     restart: always
 
 networks:
-  _inception
+  _- inception
