@@ -39,15 +39,15 @@ services:
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD_FILE=${MYSQL_PASSWORD_FILE}
-      - MYSQL_ROOT_PASSWORD_FILE=${MYSQL_ROOT_PASSWORD_FILE}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     secrets:
       - db_root_password
       - db_password
     networks: [inception]
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD_FILE}) || exit 1"]
+      test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD}) || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -68,10 +68,10 @@ services:
       - DB_HOST=mariadb
       - DB_NAME=${MYSQL_DATABASE}
       - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD_FILE=${MYSQL_PASSWORD_FILE}
+      - DB_PASSWORD_FILE=${MYSQL_PASSWORD}
       - WP_TITLE=${WP_TITLE}
       - WP_ADMIN_USER=${WP_ADMIN_USER}
-      - WP_ADMIN_PASSWORD_FILE=${WP_ADMIN_PASSWORD_FILE}
+      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
       - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
       - WP_URL=${WP_URL}
     secrets:

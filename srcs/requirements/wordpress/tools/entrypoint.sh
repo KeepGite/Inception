@@ -1,7 +1,7 @@
 set -e
 
-DB_PASS="$(cat "${DB_PASSWORD_FILE}")"
-ADMIN_PASS="$(cat "${WP_ADMIN_PASSWORD_FILE}")"
+DB_PASS="$(${DB_PASSWORD})"
+ADMIN_PASS="$(${WP_ADMIN_PASSWORD})"
 
 if [ ! -f "wp-load.php" ]; then
   curl -sSL https://wordpress.org/latest.tar.gz | tar -xz --strip-components=1
