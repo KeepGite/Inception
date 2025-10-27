@@ -18,11 +18,11 @@ volumes:
       o: bind
       device: /home/${LOGIN}/data/wp
 
-secrets:
-  db_root_password:
-    file: ../secrets/db_root_password.txt
-  db_password:
-    file: ../secrets/db_password.txt
+#secrets:
+#  db_root_password:
+#    file: ../secrets/db_root_password.txt
+#  db_password:
+#    file: ../secrets/db_password.txt
   credentials:
     file: ../secrets/credentials.txt
 
@@ -41,9 +41,9 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    secrets:
-      - db_root_password
-      - db_password
+#    secrets:
+#      - db_root_password
+#      - db_password
     networks: [inception]
     restart: always
     healthcheck:
@@ -68,15 +68,15 @@ services:
       - DB_HOST=mariadb
       - DB_NAME=${MYSQL_DATABASE}
       - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD_FILE=${MYSQL_PASSWORD}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
       - WP_TITLE=${WP_TITLE}
       - WP_ADMIN_USER=${WP_ADMIN_USER}
       - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
       - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
       - WP_URL=${WP_URL}
-    secrets:
-      - db_password
-      - credentials
+#    secrets:
+#      - db_password
+#      - credentials
     networks: [inception]
     restart: always
     healthcheck:
