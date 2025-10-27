@@ -27,7 +27,7 @@ services:
       - inception
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "mariadb-admin ping -uroot --password=$$(cat ${MYSQL_ROOT_PASSWORD}) || exit 1"]
+      test: ["CMD-SHELL", "mariadb-admin ping -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -58,7 +58,7 @@ services:
       - inception
     restart: always
     healthcheck:
-      test: ["CMD", "mariadb-admin" ,"ping", "-h", "localhost", "--password=<value_of_MYSQL_ROOT_PASSWORD_variable>"]
+      test: ["CMD-SHELL", "php -r 'exit(function_exists(\"curl_version\")?0:1);'"]
       interval: 10s
       timeout: 3s
       retries: 10
