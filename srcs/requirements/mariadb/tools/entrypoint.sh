@@ -7,11 +7,17 @@ if [ ! -d /var/lib/mysql/mysql ]; then
         sleep 5
 
 cat > /tmp/init.sql <<EOF
-FLUSH PRIVILEGES;
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
 CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\`;
+
 CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
-GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%';
+
+GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION;
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+ALTER USER 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
 FLUSH PRIVILEGES;
 EOF
 
@@ -21,7 +27,7 @@ EOF
 fi
 
 if pgrep mysqld; then
-    mysqladmin shutdown
+    mysqladmin --user="root" --password="${MYSQL_ROOT_PASSWORD}" shutdown
 fi
 
 exec "$@"
