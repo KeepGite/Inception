@@ -50,7 +50,7 @@ services:
       - inception
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "php-fpm$$PHP_VERSION -t"]
+      test: ["CMD-SHELL", "php-fpm8.2 -t"]
       interval: 30s
       timeout: 10s
       retries: 5

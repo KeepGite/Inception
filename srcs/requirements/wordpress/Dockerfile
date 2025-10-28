@@ -24,4 +24,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 WORKDIR /var/www/html
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["php-fpm${PHP_VERSION}", "-F"]
+CMD ["php-fpm", "-F"]
