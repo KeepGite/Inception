@@ -4,6 +4,9 @@ FROM debian:${DEBIAN_TAG}
 ARG PHP_VERSION=8.2
 ENV PHP_VERSION=${PHP_VERSION}
 
+RUN     apt-get update && apt-get install -y iputils-ping
+
+
 RUN apt-get update \
     && apt-get install -y curl ca-certificates tar less mariadb-client \
        php${PHP_VERSION}-fpm php${PHP_VERSION}-cli php${PHP_VERSION}-mysql php${PHP_VERSION}-mbstring php${PHP_VERSION}-xml php${PHP_VERSION}-zip php${PHP_VERSION}-curl \

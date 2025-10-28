@@ -11,7 +11,7 @@ networks:
 
 services:
   mariadb:
-    container_name: mariadb
+    container_name: mariadb_service
     image: mariadb-inception
     build:
       context: ./requirements/mariadb/
