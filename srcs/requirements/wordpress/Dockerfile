@@ -22,6 +22,6 @@ COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/html
-EXPOSE 9000
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["php-fpm", "-F"]
+CMD ["php-fpm${PHP_VERSION}", "-F"]
