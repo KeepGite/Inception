@@ -14,7 +14,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --dbname="$MYSQL_DATABASE" \
         --dbuser="$MYSQL_USER" \
         --dbpass="$MYSQL_PASSWORD" \
-        --dbhost="mariadb-inception" \
+        --dbhost="${MYSQL_HOST:-mariadb}" \
         --path=/var/www/html \
         --allow-root
 
@@ -40,7 +40,7 @@ fi
 if ! wp user get "$WP_NORMAL_USER" --path=/var/www/html --allow-root > /dev/null 2>&1; then
     wp user create "$WP_NORMAL_USER" "$WP_NORMAL_EMAIL" \
         --role=editor \
-        --user_pass=$WP_NORMAL_PASSWORD \
+        --user_pass="$WP_NORMAL_PASSWORD" \
         --path=/var/www/html \
         --allow-root
 fi
