@@ -1,37 +1,45 @@
 #!/bin/bash
-set -e
 
-if [ ! -d /var/lib/mysql/mysql ]; then
-    mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-    mysqld_safe --user=mysql --skip-grant-tables &
-        sleep 5
+# Création des répertoires nécessaires
+mkdir -p /var/lib/mysql /run/mysqld
+chown -R mysql:mysql /var/lib/mysql /run/mysqld
 
-cat > /tmp/init.sql <<EOF
-CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\`;
+# Initialisation de la base de données si elle n'existe pas
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "Initialisation de la base de données..."
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
-CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+    # Démarrage temporaire de MariaDB pour l'initialisation
+mysqld_safe --datadir=/var/lib/mysql &
+pid="$!"
 
-GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION;
+sleep 3
 
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
-ALTER USER 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+    mysql << EOF
+-- Suppression des utilisateurs par défaut
+DELETE FROM mysql.user WHERE User='';
 
+
+CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+
+
 
 CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
 GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root_password' WITH GRANT OPTION;
+
 
 FLUSH PRIVILEGES;
 EOF
 
-    mariadb -u root < /tmp/init.sql
-
-    rm /tmp/init.sql
+echo "Arret temporaire..."
+mysqladmin shutdown
+wait "$pid"
 fi
 
-if pgrep mysqld; then
-    mysqladmin --user="root" --password="${MYSQL_ROOT_PASSWORD}" shutdown
-fi
-
-exec "$@"
+echo "Démarrage de MariaDB..."
+# Démarrage de MariaDB en mode normal
+mariadbd --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0
