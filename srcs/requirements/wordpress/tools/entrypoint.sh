@@ -1,5 +1,8 @@
 #!/bin/sh
-set -e
+set -eu
+
+
+sleep 8
 
 mkdir -p /run/php && chown www-data:www-data /run/php
 

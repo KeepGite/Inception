@@ -10,7 +10,7 @@ RUN     apt    update && \
 RUN     mkdir -p /var/run/mysqld && \
             chown -R mysql:mysql /var/run/mysqld
 
-COPY    /conf/mariadb.cnf /etc/mysql/mariadb.conf.d/mycnf.cnf
+COPY    /conf/mariadb.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
 
 COPY    /tools/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
